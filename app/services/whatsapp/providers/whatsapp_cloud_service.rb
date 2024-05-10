@@ -89,17 +89,16 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
  def format_content(message)
-  # Asumindo que o nome do agente está disponível como uma propriedade do remetente
+# Asumindo que o nome do agente está disponível como uma propriedade do remetente
   agent_name = message.sender&.name
-  # Asumindo que o nome do time está disponível como uma propriedade do objeto associado à conversa
   team_name = message.conversation&.assigned_team&.name
 
-  # Formata a mensagem para incluir o nome do agente em negrito no início, e o nome do time se disponível
-  if agent_name
-    formatted_message = "*#{agent_name}*"
-    formatted_message += " (*#{team_name}*)" if team_name
-    formatted_message += ": \n\n #{message.content}"
-    return formatted_message
+  # Formata a mensagem para incluir o nome do agente e do time em negrito no início
+  if agent_name && team_name
+    return "*#{agent_name} (#{team_name})*:\n\n #{message.content}"
+  # Formata a mensagem para incluir o nome do agente em negrito no início
+  elsif agent_name
+    return "*#{agent_name}*:\n\n #{message.content}"
   else
     # Se não houver nome de agente disponível, retorna apenas o conteúdo da mensagem
     return message.content
