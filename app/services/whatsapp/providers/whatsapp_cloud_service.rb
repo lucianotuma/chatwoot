@@ -80,7 +80,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
         messaging_product: 'whatsapp',
         context: whatsapp_reply_context(message),
         to: phone_number,
-        text: { body: message.content },
+        text: { body: format_content(message) },
         type: 'text'
       }.to_json
     )
@@ -88,6 +88,21 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     process_response(response)
   end
 
+ def format_content(message)
+  # Asumindo que o nome do agente está disponível como uma propriedade do remetente
+  agent_name = message.sender&.name
+
+  # Formata a mensagem para incluir o nome do agente em negrito no início
+  if agent_name
+    return "*#{agent_name}*: \n\n #{message.content}"
+  else
+    # Se não houver nome de agente disponível, retorna apenas o conteúdo da mensagem
+    return message.content
+  end
+end
+
+
+  
   def send_attachment_message(phone_number, message)
     attachment = message.attachments.first
     type = %w[image audio video].include?(attachment.file_type) ? attachment.file_type : 'document'
