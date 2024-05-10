@@ -91,7 +91,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
  def format_content(message)
 # Asumindo que o nome do agente está disponível como uma propriedade do remetente
   agent_name = message.sender&.name
-  team_name = message.conversation&.assigned_team&.name
+  team_name = message.conversation&.team&.name
 
   # Formata a mensagem para incluir o nome do agente e do time em negrito no início
   if agent_name && team_name
